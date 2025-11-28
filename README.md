@@ -51,6 +51,7 @@ General
 help            Show all commands
 clear           Clear the console
 exit / hide     Hide DropShell
+reload          Force reloads the config
 ```
 
 Navigation
