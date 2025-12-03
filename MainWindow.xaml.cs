@@ -14,17 +14,9 @@ namespace DropShell
     /// </summary>
     public partial class MainWindow : Window
     {
-        private HotkeyService _hotkeyService;
-
         public MainWindow()
         {
             InitializeComponent();
-            _hotkeyService = new HotkeyService();
-
-            this.Loaded += (s, e) =>
-            {
-                _hotkeyService.Register(ConfigService.Instance.Config.HotKey, this);
-            };
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -74,13 +66,7 @@ namespace DropShell
 
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
-        }
-
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-            _hotkeyService.Unregister(this); // unregister the hotkey
-            base.OnClosing(e);
+            this.Hide();
         }
 
         private void CommandInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
