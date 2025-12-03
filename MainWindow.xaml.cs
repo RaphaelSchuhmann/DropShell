@@ -22,11 +22,6 @@ namespace DropShell
             };
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Button clicked");
-        }
-
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             _hotkeyService.Unregister(this); // unregister the hotkey
