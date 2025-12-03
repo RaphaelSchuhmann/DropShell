@@ -22,7 +22,6 @@ namespace DropShell.Config.Models
     public class Window
     {
         public int Height { get; set; } = 300;
-        public double Opacity { get; set; } = 0.9;
         public string BackgroundColor { get; set; } = string.Empty;
         public string TextColor { get; set; } = string.Empty;
         public int FontSize { get; set; } = 14;

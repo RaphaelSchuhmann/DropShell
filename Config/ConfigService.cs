@@ -52,7 +52,6 @@ namespace DropShell.Config
 
                 JsonElement window = root.GetProperty("window");
                 Config.Window.Height = window.GetProperty("height").GetInt32();
-                Config.Window.Opacity = window.GetProperty("opacity").GetDouble();
                 Config.Window.BackgroundColor = window.GetProperty("background").GetString() ?? "#1e1e1e";
                 Config.Window.TextColor = window.GetProperty("textColor").GetString() ?? "#ffffff";
                 Config.Window.FontSize = window.GetProperty("fontSize").GetInt32();
