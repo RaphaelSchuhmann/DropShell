@@ -93,8 +93,6 @@ namespace DropShell.Services.Hotkey
 
             int HOTKEY_ID = 9000;
 
-            MessageBox.Show($"Modifiers {modifiers}, vk: {vk}");
-
             bool registered = RegisterHotKey(hWnd, HOTKEY_ID, modifiers, vk);
             if (!registered)
                 MessageBox.Show("Failed to register global hotkey.");
@@ -114,7 +112,6 @@ namespace DropShell.Services.Hotkey
                 if (id == 9000)
                 {
                     // Hotkey pressed
-                    MessageBox.Show("Hotkey pressed");
                     handled = true;
                 }
             }

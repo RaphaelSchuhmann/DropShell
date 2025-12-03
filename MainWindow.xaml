@@ -5,7 +5,85 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DropShell"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Loaded="Window_Loaded"
+        Title="DropShell"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="False"
+        Topmost="True"
+        Top="0"
+        Left="0">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+
+                        <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"  BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="00"/>
+        </Style>
+    </Window.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="90*"/>
+            <ColumnDefinition Width="10*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <!--Close Button-->
+        <Button Grid.Column="1" 
+                Click="CloseWindow_Click" 
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Margin="0 30 30 0" Padding="10" 
+                BorderBrush="Transparent" BorderThickness="0">
+            <Path x:Name="ClosePath" Fill="Black" Width="30" Stretch="Uniform" Data="M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z"/>
+        </Button>
+
+        <!--Main Content Grid-->
+        <Grid Grid.Column="0" VerticalAlignment="Stretch" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="0" 
+                          HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                          HorizontalAlignment="Left"
+                          Margin="30 30 0 0">
+                <StackPanel x:Name="CommandOutput" Orientation="Vertical">
+                    <!--Command output goes here-->
+                </StackPanel>
+            </ScrollViewer>
+            <TextBox x:Name="CommandInput"
+                     KeyDown="CommandInput_KeyDown"
+                     Grid.Row="1" 
+                     Margin="30 0 30 0"
+                     VerticalAlignment="Center" 
+                     HorizontalAlignment="Stretch"
+                     FontSize="30" 
+                     Background="Transparent"
+                     BorderThickness="0 0 0 1"/>
+        </Grid>
     </Grid>
 </Window>
