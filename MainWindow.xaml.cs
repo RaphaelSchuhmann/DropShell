@@ -1,4 +1,5 @@
-﻿using DropShell.Config;
+﻿using DropShell.Commands;
+using DropShell.Config;
 using DropShell.Services.Hotkey;
 using DropShell.UI.CommandOutput;
 using System.IO;
@@ -42,7 +43,7 @@ namespace DropShell
 
         private void OutputData(string data)
         {
-            string currentDirectory = Directory.GetCurrentDirectory(); // Needs to be changed to internal current directory
+            string currentDirectory = CommandDispatcher.Instance.CurrentWorkingDir();
             string currentTime = DateTime.Now.ToString("dd.mm.yyyy hh:mm tt");
 
             string output = $"[{currentTime}] {currentDirectory}> ${data}";
