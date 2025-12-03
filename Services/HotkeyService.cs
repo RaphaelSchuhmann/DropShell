@@ -60,10 +60,17 @@ namespace DropShell.Services.Hotkey
             { "oem_4", 0xDB }, { "oem_5", 0xDC }, { "oem_6", 0xDD }, { "oem_7", 0xDE }
         };
 
+        public event EventHandler hotkeyTriggered;
 
         public void Register(string hotKey, Window window)
         {
             var helper = new WindowInteropHelper(window);
+            if (helper.Handle == IntPtr.Zero)
+            {
+                // force handle creation
+                var force = window.Dispatcher.Invoke(() => helper.EnsureHandle());
+            }
+
             IntPtr hWnd = helper.Handle;
 
             const uint MOD_ALT = 0x0001;
@@ -111,12 +118,22 @@ namespace DropShell.Services.Hotkey
                 int id = wParam.ToInt32();
                 if (id == 9000)
                 {
-                    // Hotkey pressed
+                    OnHotkeyPressed();
                     handled = true;
                 }
             }
 
             return IntPtr.Zero;
+        }
+
+        protected virtual void OnHotkeyPressed()
+        {
+            EventHandler handler = hotkeyTriggered;
+
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
 
         public void Unregister(Window window)
