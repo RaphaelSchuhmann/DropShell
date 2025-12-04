@@ -40,6 +40,8 @@ namespace DropShell
                 ClosePath.Fill = foregroundColor;
                 CommandInput.Foreground = foregroundColor;
                 CommandInput.Focus();
+                CurrentPathDisplay.Text = $"{CommandDispatcher.Instance.CurrentWorkingDir()}>";
+                CurrentPathDisplay.Foreground = foregroundColor;
             }
         }
 
@@ -49,13 +51,15 @@ namespace DropShell
             this.Hide();
         }
 
-        private void CommandInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private async void CommandInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
                 if (!string.IsNullOrEmpty(CommandInput.Text)) 
                 { 
-                    OutputService.Instance.Log(CommandInput.Text); 
+                    OutputService.Instance.Log(CommandInput.Text);
+                    await CommandDispatcher.Instance.Dispatch(CommandInput.Text);
+                    CurrentPathDisplay.Text = $"{CommandDispatcher.Instance.CurrentWorkingDir()}>";
                     CommandInput.Text = string.Empty; 
                 }
             }

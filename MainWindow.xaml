@@ -77,15 +77,34 @@
                     <!--Command output goes here-->
                 </StackPanel>
             </ScrollViewer>
-            <TextBox x:Name="CommandInput"
-                     KeyDown="CommandInput_KeyDown"
-                     Grid.Row="1" 
-                     Margin="30 0 30 0"
-                     VerticalAlignment="Center" 
-                     HorizontalAlignment="Stretch"
-                     FontSize="30" 
-                     Background="Transparent"
-                     BorderThickness="0 0 0 1"/>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="CurrentPathDisplay"
+                         IsReadOnly="True"
+                         Grid.Column="0" 
+                         Margin="30 0 0 0"
+                         Padding="0 0 10 0"
+                         VerticalAlignment="Center" 
+                         HorizontalAlignment="Stretch"
+                         FontSize="30" 
+                         Background="Transparent"
+                         BorderThickness="0 0 0 1"/>
+                <TextBox x:Name="CommandInput"
+                         KeyDown="CommandInput_KeyDown"
+                         Grid.Column="1" 
+                         Margin="0 0 30 0"
+                         VerticalAlignment="Center" 
+                         HorizontalAlignment="Stretch"
+                         FontSize="30" 
+                         Background="Transparent"
+                         BorderThickness="0 0 0 1"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

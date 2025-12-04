@@ -45,8 +45,10 @@ namespace DropShell.Services.Display
 
         public readonly Dictionary<string, string> errorMessages = new Dictionary<string, string>
         {
-            ["command.cd.sameDir"] = "Invalid Input: New directory is the same as the old directory!",
             ["command.cd.dirNotExist"] = "Invalid Input: New directory does not exist!",
+            ["command.cd.badPath"] = "Invalid path format: ",
+            ["command.noArgs"] = "Invalid Input: No arguments were supplied",
+            ["command.unknown"] = "Unknown command: ",
         };
 
         private void Display(TextBox message)
@@ -64,13 +66,25 @@ namespace DropShell.Services.Display
             });
         }
 
+        public void ClearScreen()
+        {
+            if (_outputPanel == null) return;
+
+            StackPanel display = _outputPanel.Content as StackPanel;
+
+            _outputPanel.Dispatcher.Invoke(() =>
+            {
+                display!.Children.Clear();
+            });
+        }
+
         public void Log(string message)
         {
             if (string.IsNullOrEmpty(message)) return;
 
             // add message prefix
             string currentDirectory = CommandDispatcher.Instance.CurrentWorkingDir();
-            string currentTime = DateTime.Now.ToString("dd.mm.yyyy hh:mm");
+            string currentTime = DateTime.Now.ToString("dd.mm.yyyy hh:mm:ss");
 
             message = $"[{currentTime}] {currentDirectory}> {message}";
 
@@ -99,7 +113,7 @@ namespace DropShell.Services.Display
             string currentDirectory = CommandDispatcher.Instance.CurrentWorkingDir();
             string currentTime = DateTime.Now.ToString("dd.mm.yyyy hh:mm");
 
-            error = $" <ERROR> [{currentTime}] {currentDirectory}> {error}";
+            error = $"<ERROR> [{currentTime}] {currentDirectory}> {error}";
 
             TextBox messageBox = new TextBox
             {
