@@ -1,7 +1,7 @@
 ﻿using DropShell.Commands;
 using DropShell.Config;
 using DropShell.Services.Hotkey;
-using DropShell.UI.CommandOutput;
+using DropShell.Services.Display;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,6 +18,8 @@ namespace DropShell
         public MainWindow()
         {
             InitializeComponent();
+
+            OutputService.Initialize(OutputScroller);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -41,29 +43,6 @@ namespace DropShell
             }
         }
 
-        private void OutputData(string data)
-        {
-            string currentDirectory = CommandDispatcher.Instance.CurrentWorkingDir();
-            string currentTime = DateTime.Now.ToString("dd.mm.yyyy hh:mm tt");
-
-            string output = $"[{currentTime}] {currentDirectory}> ${data}";
-            CommandDisplay.Instance.AddItem(output);
-
-            UpdateOutputDisplay();
-        }
-
-        private void UpdateOutputDisplay()
-        {
-            List<string> data = CommandDisplay.Instance.GetList();
-            if (data.Count > 0)
-            {
-                CommandOutput.Children.Clear();
-                foreach (string item in data)
-                {
-                    CommandOutput.Children.Add(new TextBox { Text = item, IsReadOnly = true, FontSize = 30, Foreground = (Brush)new BrushConverter().ConvertFromString(ConfigService.Instance.Config.Window.TextColor!)! });
-                }
-            }
-        }
 
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
@@ -76,7 +55,7 @@ namespace DropShell
             {
                 if (!string.IsNullOrEmpty(CommandInput.Text)) 
                 { 
-                    OutputData(CommandInput.Text); 
+                    OutputService.Instance.Log(CommandInput.Text); 
                     CommandInput.Text = string.Empty; 
                 }
             }
