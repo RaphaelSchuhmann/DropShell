@@ -1,8 +1,11 @@
-﻿using DropShell.Services.Display;
+﻿using DropShell.Commands.Models;
+using DropShell.Services.Display;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,17 +21,59 @@ namespace DropShell.Commands
 
         public static CommandDispatcher Instance => _instance.Value;
 
-        private CommandDispatcher() { }
+        private CommandDispatcher()
+        {
+            RegisterBuiltinCommands();
+            ResetWorkingDir();
+        }
 
         private static string _currentWorkingDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
-        public void ChangeWorkingDir(string newDir)
+        private readonly Dictionary<string, ICommand> _commands = new();
+
+        private void RegisterBuiltinCommands()
         {
-            if (newDir == _currentWorkingDir)
+            var builtinCmds = Assembly.GetExecutingAssembly()
+                                      .GetTypes()
+                                      .Where(t =>
+                                             !t.IsAbstract &&
+                                             typeof(ICommand).IsAssignableFrom(t) &&
+                                             t.Namespace == "DropShell.Commands.BuiltIn")
+                                      .ToList();
+
+            foreach (var builtinCmd in builtinCmds)
             {
-                OutputService.Instance.LogError(OutputService.Instance.errorMessages["command.cd.sameDir"]);
+                var cmd = (ICommand)Activator.CreateInstance(builtinCmd)!;
+                _commands[cmd.Name] = cmd;
+            }
+        }
+
+        public void Register(ICommand command)
+        {
+            _commands[command.Name] = command;
+        }
+
+        public async Task Dispatch(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return;
+
+            var tokens = input.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var commandName = tokens[0];
+            var args = tokens.Skip(1).ToList();
+
+            if (!_commands.TryGetValue(commandName, out var command))
+            {
+                OutputService.Instance.LogError($"{OutputService.Instance.errorMessages["command.unknown"]}{commandName}");
+                return;
             }
 
+            CommandContext ctx = new CommandContext { RawInput = input, Args = args, };
+
+            await command.ExecuteAsync(ctx);
+        }
+
+        public void ChangeWorkingDir(string newDir)
+        {
             if (!Directory.Exists(newDir))
             {
                 OutputService.Instance.LogError(OutputService.Instance.errorMessages["command.cd.dirNotExist"]);
@@ -37,9 +82,35 @@ namespace DropShell.Commands
             _currentWorkingDir = newDir;
         }
 
+        public string TranslateRelativeDir(string relativePath)
+        {
+            if (relativePath == null) return CurrentWorkingDir();
+
+            if (relativePath.StartsWith("~"))
+            {
+                string userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                relativePath = Path.Combine(userProfilePath, relativePath.Substring(1).TrimStart('/', '\\'));
+            }
+
+            string fullPath;
+
+            try
+            {
+                string combinedPath = Path.Combine(CurrentWorkingDir(), relativePath);
+                fullPath = Path.GetFullPath(combinedPath);
+            }
+            catch (Exception ex)
+            {
+                OutputService.Instance.LogError($"{OutputService.Instance.errorMessages["command.cd.badPath"]}{ex.Message}");
+                return CurrentWorkingDir();
+            }
+
+            return fullPath.Replace(Path.DirectorySeparatorChar, '/').Replace(Path.AltDirectorySeparatorChar, '/');
+        }
+
         public void ResetWorkingDir()
         {
-            _currentWorkingDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            _currentWorkingDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(Path.DirectorySeparatorChar, '/').Replace(Path.AltDirectorySeparatorChar, '/');
         }
 
         public string CurrentWorkingDir() { return _currentWorkingDir; }

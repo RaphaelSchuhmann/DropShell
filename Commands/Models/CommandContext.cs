@@ -11,6 +11,7 @@ namespace DropShell.Commands.Models
     /// </summary>
     public class CommandContext
     {
-
+        public List<string> Args { get; set; } = new List<string>();
+        public string RawInput { get; set; } = string.Empty;
     }
 }

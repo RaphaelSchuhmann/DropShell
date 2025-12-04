@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\BuiltIn\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Hardcodet.Wpf.TaskbarNotification" Version="1.0.5" />
   </ItemGroup>
 
