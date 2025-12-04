@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DropShell.Services.Display;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,10 +24,15 @@ namespace DropShell.Commands
 
         public void ChangeWorkingDir(string newDir)
         {
-            if (newDir == _currentWorkingDir) return; // Throw error to be displayed
+            if (newDir == _currentWorkingDir)
+            {
+                OutputService.Instance.LogError(OutputService.Instance.errorMessages["command.cd.sameDir"]);
+            }
 
-            // Check if new dir exists
-            if (!Directory.Exists(newDir)) return; // Throw error to be displayed
+            if (!Directory.Exists(newDir))
+            {
+                OutputService.Instance.LogError(OutputService.Instance.errorMessages["command.cd.dirNotExist"]);
+            }
 
             _currentWorkingDir = newDir;
         }
