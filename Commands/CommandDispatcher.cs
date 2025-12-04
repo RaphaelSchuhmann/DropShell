@@ -53,7 +53,7 @@ namespace DropShell.Commands
             _commands[command.Name] = command;
         }
 
-        public async Task Dispatch(string input)
+        public async Task Dispatch(string input, MainWindow window)
         {
             if (string.IsNullOrEmpty(input)) return;
 
@@ -67,7 +67,7 @@ namespace DropShell.Commands
                 return;
             }
 
-            CommandContext ctx = new CommandContext { RawInput = input, Args = args, };
+            CommandContext ctx = new CommandContext { RawInput = input, Args = args, Window = window };
 
             await command.ExecuteAsync(ctx);
         }
