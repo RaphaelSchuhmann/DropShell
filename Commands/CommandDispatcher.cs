@@ -53,7 +53,12 @@ namespace DropShell.Commands
             _commands[command.Name] = command;
         }
 
-        public async Task Dispatch(string input)
+        public List<ICommand> GetRegisteredCommands()
+        {
+            return _commands.Values.ToList();
+        }
+
+        public async Task Dispatch(string input, MainWindow window)
         {
             if (string.IsNullOrEmpty(input)) return;
 
@@ -63,11 +68,11 @@ namespace DropShell.Commands
 
             if (!_commands.TryGetValue(commandName, out var command))
             {
-                OutputService.Instance.LogError($"{OutputService.Instance.errorMessages["command.unknown"]}{commandName}");
+                OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.unknown"]}{commandName}");
                 return;
             }
 
-            CommandContext ctx = new CommandContext { RawInput = input, Args = args, };
+            CommandContext ctx = new CommandContext { RawInput = input, Args = args, Window = window };
 
             await command.ExecuteAsync(ctx);
         }
@@ -76,7 +81,8 @@ namespace DropShell.Commands
         {
             if (!Directory.Exists(newDir))
             {
-                OutputService.Instance.LogError(OutputService.Instance.errorMessages["command.cd.dirNotExist"]);
+                OutputService.Instance.LogCommandError(OutputService.Instance.errorMessages["command.cd.dirNotExist"]);
+                return;
             }
 
             _currentWorkingDir = newDir;
@@ -101,7 +107,7 @@ namespace DropShell.Commands
             }
             catch (Exception ex)
             {
-                OutputService.Instance.LogError($"{OutputService.Instance.errorMessages["command.cd.badPath"]}{ex.Message}");
+                OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.cd.badPath"]}{ex.Message}");
                 return CurrentWorkingDir();
             }
 

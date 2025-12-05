@@ -30,7 +30,7 @@ namespace DropShell.Config
             LoadConfig();
         }
 
-        private void LoadConfig()
+        public void LoadConfig()
         {
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string configPath = Path.Combine(appData, "DropShell", "config.json");

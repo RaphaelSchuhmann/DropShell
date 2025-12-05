@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Runtime.CompilerServices;
 
 namespace DropShell
 {
@@ -28,23 +29,28 @@ namespace DropShell
             var screen = System.Windows.SystemParameters.PrimaryScreenWidth;
             if (mainWindow != null)
             {
-                mainWindow.Height = ConfigService.Instance.Config.Window.Height;
                 mainWindow.Width = screen;
-                mainWindow.Top = 0;
-                mainWindow.Left = 0;
-
-                Brush brush = (Brush)new BrushConverter().ConvertFromString(ConfigService.Instance.Config.Window.BackgroundColor!)!;
-                mainWindow.Background = brush;
-
-                Brush foregroundColor = (Brush)new BrushConverter().ConvertFromString(ConfigService.Instance.Config.Window.TextColor!)!;
-                ClosePath.Fill = foregroundColor;
-                CommandInput.Foreground = foregroundColor;
-                CommandInput.Focus();
-                CurrentPathDisplay.Text = $"{CommandDispatcher.Instance.CurrentWorkingDir()}>";
-                CurrentPathDisplay.Foreground = foregroundColor;
+                SetPreferences();
             }
         }
 
+        public void SetPreferences()
+        {
+            var mainWindow = Window.GetWindow(this);
+            mainWindow.Height = ConfigService.Instance.Config.Window.Height;
+            mainWindow.Top = 0;
+            mainWindow.Left = 0;
+
+            Brush brush = (Brush)new BrushConverter().ConvertFromString(ConfigService.Instance.Config.Window.BackgroundColor!)!;
+            mainWindow.Background = brush;
+
+            Brush foregroundColor = (Brush)new BrushConverter().ConvertFromString(ConfigService.Instance.Config.Window.TextColor!)!;
+            ClosePath.Fill = foregroundColor;
+            CommandInput.Foreground = foregroundColor;
+            CommandInput.Focus();
+            CurrentPathDisplay.Text = $"{CommandDispatcher.Instance.CurrentWorkingDir()}>";
+            CurrentPathDisplay.Foreground = foregroundColor;
+        }
 
         private void CloseWindow_Click(object sender, RoutedEventArgs e)
         {
@@ -58,7 +64,7 @@ namespace DropShell
                 if (!string.IsNullOrEmpty(CommandInput.Text)) 
                 { 
                     OutputService.Instance.Log(CommandInput.Text);
-                    await CommandDispatcher.Instance.Dispatch(CommandInput.Text);
+                    await CommandDispatcher.Instance.Dispatch(CommandInput.Text, this);
                     CurrentPathDisplay.Text = $"{CommandDispatcher.Instance.CurrentWorkingDir()}>";
                     CommandInput.Text = string.Empty; 
                 }

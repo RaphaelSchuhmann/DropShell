@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Commands\BuiltIn\kymqrluq.vjd~" />
     <None Remove="favicon.ico" />
   </ItemGroup>
 

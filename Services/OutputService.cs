@@ -47,6 +47,8 @@ namespace DropShell.Services.Display
         {
             ["command.cd.dirNotExist"] = "Invalid Input: New directory does not exist!",
             ["command.cd.badPath"] = "Invalid path format: ",
+            ["command.launch.badPath"] = "Invalid path: Executable was not found: ",
+            ["command.launch.notExe"] = "Invalid path: Path is not an executable: ",
             ["command.noArgs"] = "Invalid Input: No arguments were supplied",
             ["command.unknown"] = "Unknown command: ",
         };
@@ -131,13 +133,29 @@ namespace DropShell.Services.Display
             Display(messageBox);
         }
 
+        public void LogCommand(string message)
+        {
+            if (string.IsNullOrEmpty(message)) return;
+
+            TextBox messageBox = new TextBox
+            {
+                Text = message,
+                Margin = new System.Windows.Thickness(0, 2, 0, 2),
+                Foreground = (Brush)new BrushConverter().ConvertFromString(ConfigService.Instance.Config.Window.TextColor!)!,
+                Background = Brushes.Transparent,
+                BorderThickness = new System.Windows.Thickness(0),
+                IsReadOnly = true,
+                FontSize = ConfigService.Instance.Config.Window.FontSize,
+                TextWrapping = TextWrapping.Wrap,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+
+            Display(messageBox);
+        }
+
         public void LogCommandError(string error)
         {
             if (string.IsNullOrEmpty(error)) return;
-
-            // add message prefix
-            string currentDirectory = CommandDispatcher.Instance.CurrentWorkingDir();
-            string currentTime = DateTime.Now.ToString("dd.mm.yyyy hh:mm");
 
             TextBox messageBox = new TextBox
             {

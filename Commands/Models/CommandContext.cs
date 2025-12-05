@@ -13,5 +13,6 @@ namespace DropShell.Commands.Models
     {
         public List<string> Args { get; set; } = new List<string>();
         public string RawInput { get; set; } = string.Empty;
+        public MainWindow? Window { get; set; }
     }
 }
