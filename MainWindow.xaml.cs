@@ -23,7 +23,7 @@ namespace DropShell
             OutputService.Initialize(OutputScroller);
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var mainWindow = Window.GetWindow(this);
             var screen = System.Windows.SystemParameters.PrimaryScreenWidth;
@@ -31,6 +31,13 @@ namespace DropShell
             {
                 mainWindow.Width = screen;
                 SetPreferences();
+
+                // Run startup commands
+                List<string> startUpCommands = ConfigService.Instance.Config.StartupCommands;
+                foreach (string command in startUpCommands)
+                {
+                    await CommandDispatcher.Instance.Dispatch(command, this);
+                }
             }
         }
 

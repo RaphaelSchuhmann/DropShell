@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DropShell.Commands
@@ -62,7 +63,14 @@ namespace DropShell.Commands
         {
             if (string.IsNullOrEmpty(input)) return;
 
-            var tokens = input.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var tokens = Regex.Matches(input, @"[\""].+?[\""]|[^ ]+")
+                  .Cast<Match>()
+                  .Select(m => m.Value.Trim('"'))
+                  .ToList();
+
+            if (tokens.Count == 0)
+                return;
+
             var commandName = tokens[0];
             var args = tokens.Skip(1).ToList();
 
