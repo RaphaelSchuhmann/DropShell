@@ -53,6 +53,11 @@ namespace DropShell.Commands
             _commands[command.Name] = command;
         }
 
+        public List<ICommand> GetRegisteredCommands()
+        {
+            return _commands.Values.ToList();
+        }
+
         public async Task Dispatch(string input, MainWindow window)
         {
             if (string.IsNullOrEmpty(input)) return;
