@@ -68,7 +68,7 @@ namespace DropShell.Commands
 
             if (!_commands.TryGetValue(commandName, out var command))
             {
-                OutputService.Instance.LogError($"{OutputService.Instance.errorMessages["command.unknown"]}{commandName}");
+                OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.unknown"]}{commandName}");
                 return;
             }
 
@@ -81,7 +81,8 @@ namespace DropShell.Commands
         {
             if (!Directory.Exists(newDir))
             {
-                OutputService.Instance.LogError(OutputService.Instance.errorMessages["command.cd.dirNotExist"]);
+                OutputService.Instance.LogCommandError(OutputService.Instance.errorMessages["command.cd.dirNotExist"]);
+                return;
             }
 
             _currentWorkingDir = newDir;
@@ -106,7 +107,7 @@ namespace DropShell.Commands
             }
             catch (Exception ex)
             {
-                OutputService.Instance.LogError($"{OutputService.Instance.errorMessages["command.cd.badPath"]}{ex.Message}");
+                OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.cd.badPath"]}{ex.Message}");
                 return CurrentWorkingDir();
             }
 

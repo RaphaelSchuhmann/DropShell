@@ -18,16 +18,25 @@ namespace DropShell.Commands.BuiltIn
 
         public Task ExecuteAsync(CommandContext ctx)
         {
-            string[] items = Directory.GetFileSystemEntries(CommandDispatcher.Instance.CurrentWorkingDir());
-
-            foreach (string item in items)
+            try
             {
-                if (string.IsNullOrEmpty(item)) continue;
+                string[] items = Directory.GetFileSystemEntries(CommandDispatcher.Instance.CurrentWorkingDir());
 
-                OutputService.Instance.LogCommand(item.Replace(Path.DirectorySeparatorChar, '/').Replace(Path.AltDirectorySeparatorChar, '/'));
+                foreach (string item in items)
+                {
+                    if (string.IsNullOrEmpty(item)) continue;
+
+                    OutputService.Instance.LogCommand(item.Replace(Path.DirectorySeparatorChar, '/').Replace(Path.AltDirectorySeparatorChar, '/'));
+                }
+
+                return Task.CompletedTask;
             }
-
-            return Task.CompletedTask;
+            catch (Exception _)
+            {
+                OutputService.Instance.LogCommandError("An unexpected error occured, resetting current working directory...");
+                CommandDispatcher.Instance.ResetWorkingDir();
+                return Task.CompletedTask;
+            }
         }
     }
 }

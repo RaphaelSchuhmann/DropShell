@@ -101,7 +101,11 @@ namespace DropShell.Services.Hotkey
             int HOTKEY_ID = 9000;
 
             bool registered = RegisterHotKey(hWnd, HOTKEY_ID, modifiers, vk);
-            if (!registered) MessageBox.Show("Failed to register global hotkey.");
+            if (!registered)
+            {
+                MessageBox.Show("Failed to register global hotkey.");
+                Environment.Exit(0);
+            }
 
             HwndSource source = HwndSource.FromHwnd(hWnd);
             source.AddHook(HwndHook);
