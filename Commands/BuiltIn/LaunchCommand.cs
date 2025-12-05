@@ -48,8 +48,21 @@ namespace DropShell.Commands.BuiltIn
 
             if (!File.Exists(ctx.Args[0]))
             {
-                OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.launch.badPath"]}{ctx.Args[0]}");
-                return Task.CompletedTask;
+                // First check if it is an alias
+                if (ConfigService.Instance.Config.LaunchAliases.ContainsKey(ctx.Args[0]))
+                {
+                    string path = ConfigService.Instance.Config.LaunchAliases[ctx.Args[0]];
+
+                    LaunchProgram(path);
+
+                    ctx.Window!.Hide();
+                    return Task.CompletedTask;
+                }
+                else
+                {
+                    OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.launch.badPath"]}{ctx.Args[0]}");
+                    return Task.CompletedTask;
+                }
             }
 
             LaunchProgram(ctx.Args[0]);
