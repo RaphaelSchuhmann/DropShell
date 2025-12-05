@@ -60,6 +60,15 @@ namespace DropShell.Config
                 Config.ShowOnStartup = root.GetProperty("behavior").GetProperty("showOnStartup").GetBoolean();
                 Config.AutoClear = root.GetProperty("behavior").GetProperty("autoClear").GetBoolean();
 
+                JsonElement aliases = root.GetProperty("launchAliases");
+                foreach (JsonProperty prop in aliases.EnumerateObject())
+                {
+                    string name = prop.Name;
+                    string path = prop.Value.GetString() ?? string.Empty;
+
+                    Config.LaunchAliases.Add(name, path);
+                }
+
                 JsonElement groups = root.GetProperty("groups");
                 Config.Groups = new List<Group>();
 

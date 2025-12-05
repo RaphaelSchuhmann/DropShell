@@ -19,6 +19,7 @@ namespace DropShell.Config.Models
         public bool AutoClear { get; set; } = false;
         public List<Group> Groups { get; set; } = new List<Group>();
         public List<string> StartupCommands { get; set; } = new List<string>();
+        public Dictionary<string, string> LaunchAliases { get; set; } = new Dictionary<string, string>();
     }
 
     public class Window
