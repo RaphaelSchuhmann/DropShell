@@ -13,6 +13,7 @@ namespace DropShell.Config.Models
     public class DropShellConfig
     {
         public string HotKey { get; set; } = string.Empty;
+        public string DefaultDir {  get; set; } = string.Empty;
         public Window Window { get; set; } = new Window();
         public bool ShowOnStartup { get; set; } = false;
         public bool AutoClear { get; set; } = false;

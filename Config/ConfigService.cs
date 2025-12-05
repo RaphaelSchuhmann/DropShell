@@ -49,6 +49,7 @@ namespace DropShell.Config
                 JsonElement root = doc.RootElement;
 
                 Config.HotKey = root.GetProperty("hotkey").GetString() ?? string.Empty;
+                Config.DefaultDir = root.GetProperty("defaultDir").GetString() ?? string.Empty;
 
                 JsonElement window = root.GetProperty("window");
                 Config.Window.Height = window.GetProperty("height").GetInt32();

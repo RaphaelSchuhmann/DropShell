@@ -1,4 +1,5 @@
 ﻿using DropShell.Commands.Models;
+using DropShell.Config;
 using DropShell.Services.Display;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,10 @@ namespace DropShell.Commands
         private static string _currentWorkingDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
         private readonly Dictionary<string, ICommand> _commands = new();
+        private readonly Dictionary<string, string> _defaultPaths = new()
+        {
+            ["user"] = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(Path.DirectorySeparatorChar, '/').Replace(Path.AltDirectorySeparatorChar, '/'),
+    };
 
         private void RegisterBuiltinCommands()
         {
@@ -124,7 +129,22 @@ namespace DropShell.Commands
 
         public void ResetWorkingDir()
         {
-            _currentWorkingDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(Path.DirectorySeparatorChar, '/').Replace(Path.AltDirectorySeparatorChar, '/');
+            //_currentWorkingDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(Path.DirectorySeparatorChar, '/').Replace(Path.AltDirectorySeparatorChar, '/');
+            string configDefaultDir = ConfigService.Instance.Config.DefaultDir;
+
+            if (_defaultPaths.ContainsKey(configDefaultDir))
+            {
+                _currentWorkingDir = _defaultPaths[configDefaultDir];
+                return;
+            }
+
+            if (string.IsNullOrEmpty(configDefaultDir) || !Directory.Exists(configDefaultDir))
+            {
+                _currentWorkingDir = _defaultPaths["user"];
+                return;
+            }
+
+            _currentWorkingDir = configDefaultDir;
         }
 
         public string CurrentWorkingDir() { return _currentWorkingDir; }
