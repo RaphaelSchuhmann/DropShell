@@ -57,6 +57,7 @@ namespace DropShell.Config
                 Config.Window.FontSize = window.GetProperty("fontSize").GetInt32();
 
                 Config.ShowOnStartup = root.GetProperty("behavior").GetProperty("showOnStartup").GetBoolean();
+                Config.AutoClear = root.GetProperty("behavior").GetProperty("autoClear").GetBoolean();
 
                 JsonElement groups = root.GetProperty("groups");
                 Config.Groups = new List<Group>();

@@ -15,6 +15,7 @@ namespace DropShell.Config.Models
         public string HotKey { get; set; } = string.Empty;
         public Window Window { get; set; } = new Window();
         public bool ShowOnStartup { get; set; } = false;
+        public bool AutoClear { get; set; } = false;
         public List<Group> Groups { get; set; } = new List<Group>();
         public List<string> StartupCommands { get; set; } = new List<string>();
     }
