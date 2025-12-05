@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using DropShell.Commands;
 using DropShell.Commands.Models;
+using DropShell.Config;
 using DropShell.Services.Display;
 
 namespace DropShell.Commands.BuiltIn
@@ -19,6 +20,8 @@ namespace DropShell.Commands.BuiltIn
         public Task ExecuteAsync(CommandContext ctx)
         {
             ctx.Window!.Hide();
+
+            if (ConfigService.Instance.Config.AutoClear) OutputService.Instance.ClearScreen();
 
             return Task.CompletedTask;
         }
