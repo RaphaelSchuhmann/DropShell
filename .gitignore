@@ -57,5 +57,4 @@ AssemblyInfo.cs
 *.csproj.user
 .vs/
 .vscode/
-
-*.json
+.idea/

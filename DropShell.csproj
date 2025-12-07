@@ -21,4 +21,11 @@
     <Resource Include="favicon.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Config\dropshell.json" />
+    <Content Include="Config\dropshell.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

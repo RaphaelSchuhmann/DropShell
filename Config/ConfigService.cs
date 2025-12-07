@@ -39,7 +39,14 @@ namespace DropShell.Config
             {
                 // Display error and switch to default config
                 MessageBox.Show("No custom config found in '%APPDATA%/DropShell/', switching to default config");
-                configPath = "./dropshell.json";
+                if (!File.Exists("./dropshell.json") && !File.Exists("./Config/dropshell.json"))
+                {
+                    // No default config available
+                    MessageBox.Show("No default config was found. Please reinstall.");
+                    Environment.Exit(1);
+                }
+
+                configPath = !File.Exists("./dropshell.json") ? "./Config/dropshell.json" : "./dropshell.json";
             }
 
             try

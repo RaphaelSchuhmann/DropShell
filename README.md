@@ -21,26 +21,31 @@ Press a global hotkey to instantly open a floating command window where you can 
 Example:
 ```json
 {
-  "hotkey": "Ctrl+Alt+Shift+P",
+  "hotkey": "Ctrl+Alt+Shift+D",
+  "defaultDir": "user",
   "window": {
-    "height": 300,
-    "opacity": 0.9,
+    "height": 700,
     "background": "#1e1e1e",
     "textColor": "#ffffff",
-    "fontSize": 14
+    "fontSize": 18
   },
   "behavior": {
-    "showOnStartup": false
+    "showOnStartup": false,
+    "autoClear": true
+  },
+  "launchAliases": {
+    "vscode": "C:/Users/name/AppData/Local/Programs/Microsoft VS Code/Code.exe",
+    "obsidian": "C:/Users/name/AppData/Local/Programs/Obsidian/Obsidian.exe"
   },
   "groups": {
     "dev": [
-      "launch \"C:/Program Files/Visual Studio/VS.exe\"",
-      "launch \"C:/Users/me/AppData/Local/Programs/Microsoft VS Code/Code.exe\""
+      "launch \"C:/Users/name/AppData/Local/Programs/Microsoft VS Code/Code.exe\"",
+      "launch \"C:/Users/name/AppData/Local/Programs/Obsidian/Obsidian.exe\""
     ]
   },
   "startup": [
-    "echo Welcome to DropShell!",
-    "echo Type 'help' for commands."
+    "echo \"Welcome to DropShell!\"",
+    "echo \"Type 'help' for commands.\""
   ]
 }
 ```
@@ -51,7 +56,9 @@ General
 help            Show all commands
 clear           Clear the console
 exit / hide     Hide DropShell
+stop            Stop the DropShell process
 reload          Force reloads the config
+echo <message>  Prints out a given message
 ```
 
 Navigation
@@ -62,7 +69,7 @@ cd <path>       Change working directory
 
 Opening / Launching
 ```
-launch <path>   Launch an application
+launch <path/alias>   Launch an application
 open <path>     Open file or folder with default program
 launch <group>  Execute a configured group of commands
 ```

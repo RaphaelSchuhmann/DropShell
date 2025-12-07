@@ -1,11 +1,4 @@
-﻿using DropShell.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DropShell.Config.Models
+﻿namespace DropShell.Config.Models
 {
     /// <summary>
     /// Model that mirrors the JSON file.

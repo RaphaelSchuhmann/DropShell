@@ -1,0 +1,28 @@
+{
+  "hotkey": "Ctrl+Alt+Shift+D",
+  "defaultDir": "user",
+  "window": {
+    "height": 700,
+    "background": "#1e1e1e",
+    "textColor": "#ffffff",
+    "fontSize": 18
+  },
+  "behavior": {
+    "showOnStartup": false,
+    "autoClear": true
+  },
+  "launchAliases": {
+    "vscode": "C:/Users/rapha/AppData/Local/Programs/Microsoft VS Code/Code.exe",
+    "obsidian": "C:/Users/rapha/AppData/Local/Programs/Obsidian/Obsidian.exe"
+  },
+  "groups": {
+    "dev": [
+      "launch \"C:/Users/rapha/AppData/Local/Programs/Microsoft VS Code/Code.exe\"",
+      "launch \"C:/Users/rapha/AppData/Local/Programs/Obsidian/Obsidian.exe\""
+    ]
+  },
+  "startup": [
+    "echo \"Welcome to DropShell!\"",
+    "echo \"Type 'help' for commands.\""
+  ]
+}
