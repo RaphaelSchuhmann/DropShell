@@ -11,9 +11,6 @@ using System.Runtime.CompilerServices;
 
 namespace DropShell
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
