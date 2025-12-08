@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,18 +29,20 @@ namespace DropShell.Services.Display
             }
         }
 
-        private readonly ScrollViewer _outputPanel;
+        private readonly ScrollViewer _outputScroller;
+        private readonly StackPanel _outputPanel;
 
-        private OutputService(ScrollViewer outputPanel) 
-        { 
+        private OutputService(ScrollViewer outputScroller, StackPanel outputPanel) 
+        {
+			_outputScroller = outputScroller;
             _outputPanel = outputPanel;
         }
 
-        public static void Initialize(ScrollViewer outputStackPanel)
+        public static void Initialize(ScrollViewer outputStackPanel, StackPanel outputPanel)
         {
             if (_instance == null)
             {
-                _instance = new OutputService(outputStackPanel);
+                _instance = new OutputService(outputStackPanel, outputPanel);
             }
         }
 
@@ -57,26 +60,20 @@ namespace DropShell.Services.Display
         {
             if (message == null) return;
 
-            StackPanel display = _outputPanel.Content as StackPanel;
-
-            _outputPanel.Dispatcher.Invoke(() =>
+			_outputScroller.Dispatcher.BeginInvoke(() =>
             {
-                display!.Children.Add(message);
-
-                // Add auto scrolling to bottom here
-                _outputPanel.ScrollToBottom();
-            });
+				_outputPanel.Children.Add(message);
+				_outputScroller.ScrollToBottom();
+			});
         }
 
         public void ClearScreen()
         {
             if (_outputPanel == null) return;
 
-            StackPanel display = _outputPanel.Content as StackPanel;
-
-            _outputPanel.Dispatcher.Invoke(() =>
+            _outputScroller.Dispatcher.Invoke(() =>
             {
-                display!.Children.Clear();
+                _outputPanel.Children.Clear();
             });
         }
 
@@ -84,14 +81,13 @@ namespace DropShell.Services.Display
         {
             if (string.IsNullOrEmpty(message)) return;
 
-            // add message prefix
-            string currentDirectory = CommandDispatcher.Instance.CurrentWorkingDir();
-            string currentTime = DateTime.Now.ToString("dd.mm.yyyy hh:mm:ss");
+			// add message prefix
+			string currentDirectory = CommandDispatcher.Instance.CurrentWorkingDir();
+            string currentTime = DateTime.Now.ToString("dd.MM.yyyy hh:mm:ss");
 
             message = $"[{currentTime}] {currentDirectory}> {message}";
 
-
-            TextBox messageBox = new TextBox
+			TextBox messageBox = new TextBox
             {
                 Text = message,
                 Margin = new System.Windows.Thickness(0, 2, 0, 2),
@@ -113,7 +109,7 @@ namespace DropShell.Services.Display
 
             // add message prefix
             string currentDirectory = CommandDispatcher.Instance.CurrentWorkingDir();
-            string currentTime = DateTime.Now.ToString("dd.mm.yyyy hh:mm");
+            string currentTime = DateTime.Now.ToString("dd.MM.yyyy hh:mm");
 
             error = $"<ERROR> [{currentTime}] {currentDirectory}> {error}";
 
@@ -140,6 +136,7 @@ namespace DropShell.Services.Display
             TextBox messageBox = new TextBox
             {
                 Text = message,
+                MinHeight = 20,
                 Margin = new System.Windows.Thickness(0, 2, 0, 2),
                 Foreground = (Brush)new BrushConverter().ConvertFromString(ConfigService.Instance.Config.Window.TextColor!)!,
                 Background = Brushes.Transparent,

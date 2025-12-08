@@ -73,8 +73,8 @@
                           HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden"
                           HorizontalAlignment="Stretch"
                           Margin="30 30 0 0">
-                <StackPanel x:Name="CommandOutput" Orientation="Vertical">
-                    <!--Command output goes here-->
+				<StackPanel x:Name="CommandOutput" Orientation="Vertical">
+					<!--Command output goes here-->
                 </StackPanel>
             </ScrollViewer>
             <Grid Grid.Row="1">
