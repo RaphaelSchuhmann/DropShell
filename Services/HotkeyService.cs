@@ -154,9 +154,15 @@ namespace DropShell.Services.Hotkey
 				if (key == "ctrl") modifiers |= MOD_CONTROL;
 				else if (key == "alt") modifiers |= MOD_ALT;
 				else if (key == "shift") modifiers |= MOD_SHIFT;
-				else if (key == "win") { MessageBox.Show("'win' cannot be used in the hotkey"); Environment.Exit(0); }
+				else if (key == "win") { MessageBox.Show("'win' cannot be used in the hotkey"); Environment.Exit(1); }
 				else
-					vk = VkCodes[key];
+				{
+					if (!VkCodes.TryGetValue(key, out vk))
+					{
+						MessageBox.Show($"Unknown key '{key}' in hotkey config");
+						Environment.Exit(1);
+					}
+				}
 			}
 
 			int HOTKEY_ID = 9000;
@@ -165,7 +171,7 @@ namespace DropShell.Services.Hotkey
 			if (!registered)
 			{
 				MessageBox.Show("Failed to register global hotkey.");
-				Environment.Exit(0);
+				Environment.Exit(1);
 			}
 
 			HwndSource source = HwndSource.FromHwnd(hWnd);
