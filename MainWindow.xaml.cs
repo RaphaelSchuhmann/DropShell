@@ -16,13 +16,13 @@ namespace DropShell
         public MainWindow()
         {
             InitializeComponent();
-
-            OutputService.Initialize(OutputScroller);
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var mainWindow = Window.GetWindow(this);
+			OutputService.Initialize(OutputScroller, CommandOutput);
+
+			var mainWindow = Window.GetWindow(this);
             var screen = System.Windows.SystemParameters.PrimaryScreenWidth;
             if (mainWindow != null)
             {
