@@ -30,7 +30,20 @@ namespace DropShell.Config
             LoadConfig();
         }
 
-        public void LoadConfig()
+        public void ClearConfig()
+        {
+            // Reset config to default values
+            Config.HotKey = string.Empty;
+            Config.DefaultDir = string.Empty;
+            Config.Window = new Models.Window();
+            Config.ShowOnStartup = false;
+			Config.AutoClear = false;
+			Config.Groups = new List<Group>();
+            Config.StartupCommands = new List<string>();
+            Config.LaunchAliases = new Dictionary<string, string>();
+		}
+
+		public void LoadConfig()
         {
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string configPath = Path.Combine(appData, "DropShell", "config.json");
