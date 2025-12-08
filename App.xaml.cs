@@ -13,10 +13,9 @@ namespace DropShell
     /// </summary>
     public partial class App : Application
     {
-        private TaskbarIcon _trayIcon;
-        private HotkeyService _trigger;
-        private HotkeyService _hotkeyService;
-        private MainWindow _mainWindow;
+        private TaskbarIcon _trayIcon = new TaskbarIcon();
+        private HotkeyService _hotkeyService = new HotkeyService();
+        private MainWindow _mainWindow = new MainWindow();
 
         protected override void OnStartup(StartupEventArgs e)
         {

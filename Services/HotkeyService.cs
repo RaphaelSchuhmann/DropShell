@@ -111,7 +111,6 @@ namespace DropShell.Services.Hotkey
             source.AddHook(HwndHook);
         }
 
-
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             const int WM_HOTKEY = 0x0312;
