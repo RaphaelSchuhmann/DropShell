@@ -7,97 +7,106 @@ using System.Text.RegularExpressions;
 
 namespace DropShell.Commands.BuiltIn
 {
-    public class LaunchCommand : ICommand
-    {
-        public string Name => "launch";
-        public string Description => "Launches a given application name or group";
+	public class LaunchCommand : ICommand
+	{
+		public string Name => "launch";
+		public string Description => "Launches a given application name or group";
 
-        public Task ExecuteAsync(CommandContext ctx)
-        {
-            if (ctx.Args[0].Length == 0)
-            {
-                OutputService.Instance.LogCommandError(OutputService.Instance.errorMessages["command.noArgs"]);
-                return Task.CompletedTask;
-            }
+		public Task ExecuteAsync(CommandContext ctx)
+		{
+			if (ctx.Args.Count <= 0 || ctx.Args[0].Length == 0)
+			{
+				OutputService.Instance.LogCommandError(OutputService.Instance.errorMessages["command.noArgs"]);
+				return Task.CompletedTask;
+			}
 
-            // Args should either be a file path or group name
-            // Check if arg is a group
-            foreach (DropShell.Config.Models.Group group in ConfigService.Instance.Config.Groups)
-            {
-                if (group.Name == ctx.Args[0])
-                {
-                    OutputService.Instance.LogCommand($"Executing group {group.Name}");
-                    
-                    List<string> commands = group.RawCommands;
+			// Args should either be a file path or group name
+			// Check if arg is a group
+			foreach (DropShell.Config.Models.Group group in ConfigService.Instance.Config.Groups)
+			{
+				if (group.Name == ctx.Args[0])
+				{
+					OutputService.Instance.LogCommand($"Executing group {group.Name}");
 
-                    foreach (string command in commands)
-                    {
-                        Debug.WriteLine($"{command}");
-                        var match = Regex.Match(command, "\"([^\"]+)\"");
-                        if (match.Success)
-                        {
-                            string path = match.Groups[1].Value;
-                            LaunchProgram(path);
-                        }
-                    }
+					List<string> commands = group.RawCommands;
 
-                    ctx.Window!.Hide();
-                    return Task.CompletedTask; // Return after execution
-                }
-            }
+					foreach (string command in commands)
+					{
+						Debug.WriteLine($"{command}");
+						var match = Regex.Match(command, "\"([^\"]+)\"");
+						if (match.Success)
+						{
+							string path = match.Groups[1].Value;
 
-            if (!File.Exists(ctx.Args[0]))
-            {
-                // First check if it is an alias
-                if (ConfigService.Instance.Config.LaunchAliases.ContainsKey(ctx.Args[0]))
-                {
-                    string path = ConfigService.Instance.Config.LaunchAliases[ctx.Args[0]];
+							if (ConfigService.Instance.Config.LaunchAliases.ContainsKey(path))
+							{
+								path = ConfigService.Instance.Config.LaunchAliases[path];
+								LaunchProgram(path);
+							}
+							else
+							{
+								LaunchProgram(path);
+							}
+						}
+					}
 
-                    LaunchProgram(path);
+					ctx.Window!.Hide();
+					return Task.CompletedTask; // Return after execution
+				}
+			}
 
-                    ctx.Window!.Hide();
-                    return Task.CompletedTask;
-                }
-                else
-                {
-                    OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.launch.badPath"]}{ctx.Args[0]}");
-                    return Task.CompletedTask;
-                }
-            }
+			if (!File.Exists(ctx.Args[0]))
+			{
+				// First check if it is an alias
+				if (ConfigService.Instance.Config.LaunchAliases.ContainsKey(ctx.Args[0]))
+				{
+					string path = ConfigService.Instance.Config.LaunchAliases[ctx.Args[0]];
 
-            LaunchProgram(ctx.Args[0]);
+					LaunchProgram(path);
 
-            ctx.Window!.Hide();
-            return Task.CompletedTask;
-        }
+					ctx.Window!.Hide();
+					return Task.CompletedTask;
+				}
+				else
+				{
+					OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.launch.badPath"]}{ctx.Args[0]}");
+					return Task.CompletedTask;
+				}
+			}
 
-        private void LaunchProgram(string path)
-        {
-            if (!File.Exists(path))
-            {
-                OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.launch.badPath"]}{path}");
-                return;
-            }
+			LaunchProgram(ctx.Args[0]);
 
-            path = CommandDispatcher.Instance.TranslateRelativeDir(path); // Ensure path is not a relative path
+			ctx.Window!.Hide();
+			return Task.CompletedTask;
+		}
 
-            string ext = Path.GetExtension(path).ToLower();
+		private void LaunchProgram(string path)
+		{
+			if (!File.Exists(path))
+			{
+				OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.launch.badPath"]}{path}");
+				return;
+			}
 
-            bool isExe = ext == ".exe" || ext == ".bat" || ext == ".cmd";
+			path = CommandDispatcher.Instance.TranslateRelativeDir(path); // Ensure path is not a relative path
 
-            if (!isExe)
-            {
-                OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.launch.notExe"]}{path}");
-                return;
-            }
+			string ext = Path.GetExtension(path).ToLower();
 
-            var psi = new ProcessStartInfo
-            {
-                FileName = path,
-                UseShellExecute = true,
-            };
+			bool isExe = ext == ".exe" || ext == ".bat" || ext == ".cmd";
 
-            Process.Start(psi);
-        }
-    }
+			if (!isExe)
+			{
+				OutputService.Instance.LogCommandError($"{OutputService.Instance.errorMessages["command.launch.notExe"]}{path}");
+				return;
+			}
+
+			var psi = new ProcessStartInfo
+			{
+				FileName = path,
+				UseShellExecute = true,
+			};
+
+			Process.Start(psi);
+		}
+	}
 }
