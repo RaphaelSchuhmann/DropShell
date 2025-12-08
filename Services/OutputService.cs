@@ -83,7 +83,7 @@ namespace DropShell.Services.Display
 
 			// add message prefix
 			string currentDirectory = CommandDispatcher.Instance.CurrentWorkingDir();
-            string currentTime = DateTime.Now.ToString("dd.mm.yyyy hh:mm:ss");
+            string currentTime = DateTime.Now.ToString("dd.MM.yyyy hh:mm:ss");
 
             message = $"[{currentTime}] {currentDirectory}> {message}";
 
@@ -109,7 +109,7 @@ namespace DropShell.Services.Display
 
             // add message prefix
             string currentDirectory = CommandDispatcher.Instance.CurrentWorkingDir();
-            string currentTime = DateTime.Now.ToString("dd.mm.yyyy hh:mm");
+            string currentTime = DateTime.Now.ToString("dd.MM.yyyy hh:mm");
 
             error = $"<ERROR> [{currentTime}] {currentDirectory}> {error}";
 
