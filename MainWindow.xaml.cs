@@ -67,7 +67,7 @@ namespace DropShell
             {
                 if (!string.IsNullOrEmpty(CommandInput.Text)) 
                 { 
-                    OutputService.Instance.Log(CommandInput.Text);
+                    if (CommandInput.Text != "clear") OutputService.Instance.Log(CommandInput.Text);
                     await CommandDispatcher.Instance.Dispatch(CommandInput.Text, this);
                     CurrentPathDisplay.Text = $"{CommandDispatcher.Instance.CurrentWorkingDir()}>";
                     CommandInput.Text = string.Empty; 
