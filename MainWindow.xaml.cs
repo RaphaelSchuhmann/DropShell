@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace DropShell
 {
