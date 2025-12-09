@@ -9,6 +9,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using DropShell.Services;
 
 namespace DropShell
 {
@@ -69,10 +70,30 @@ namespace DropShell
                 if (!string.IsNullOrEmpty(CommandInput.Text)) 
                 { 
                     if (CommandInput.Text != "clear") OutputService.Instance.Log(CommandInput.Text);
+                    
                     await CommandDispatcher.Instance.Dispatch(CommandInput.Text, this);
                     CurrentPathDisplay.Text = $"{CommandDispatcher.Instance.CurrentWorkingDir()}>";
+
+                    CommandHistoryService.Instance.Add(CommandInput.Text);
+
                     CommandInput.Text = string.Empty; 
                 }
+            }
+            else if (e.Key == System.Windows.Input.Key.Down)
+            {
+                if (CommandHistoryService.Instance.TryGetNext(out var cmd))
+                {
+                    CommandInput.Text = cmd;
+                    CommandInput.CaretIndex = CommandInput.Text!.Length;
+                }
+            }
+            else if (e.Key == System.Windows.Input.Key.Up)
+            {
+				if (CommandHistoryService.Instance.TryGetPrevious(out var cmd))
+                {
+                    CommandInput.Text = cmd;
+					CommandInput.CaretIndex = CommandInput.Text!.Length;
+				}
             }
         }
     }

@@ -17,7 +17,7 @@ namespace DropShell.Config
     /// <summary>
     /// Singleton service that loads and provides access to DropShell configuration.
     /// Only one instance exists during the application lifetime.
-    /// </summary>
+    /// </summary>  
     public sealed class ConfigService
     {
         private static readonly Lazy<ConfigService> _instance = new(() => new ConfigService());
