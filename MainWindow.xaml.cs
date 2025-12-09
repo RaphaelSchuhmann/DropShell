@@ -84,6 +84,7 @@ namespace DropShell
                 if (CommandHistoryService.Instance.TryGetNext(out var cmd))
                 {
                     CommandInput.Text = cmd;
+                    CommandInput.CaretIndex = CommandInput.Text!.Length;
                 }
             }
             else if (e.Key == System.Windows.Input.Key.Up)
@@ -91,7 +92,8 @@ namespace DropShell
 				if (CommandHistoryService.Instance.TryGetPrevious(out var cmd))
                 {
                     CommandInput.Text = cmd;
-                }
+					CommandInput.CaretIndex = CommandInput.Text!.Length;
+				}
             }
         }
     }
