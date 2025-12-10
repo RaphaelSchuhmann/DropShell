@@ -1,15 +1,10 @@
 ﻿using DropShell.Commands.Models;
 using DropShell.Config;
 using DropShell.Services.Display;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DropShell.Commands
 {
@@ -46,6 +41,8 @@ namespace DropShell.Commands
 											 typeof(ICommand).IsAssignableFrom(t) &&
 											 t.Namespace == "DropShell.Commands.BuiltIn")
 									  .ToList();
+
+			Debug.WriteLine(builtinCmds.Count);
 
 			foreach (var builtinCmd in builtinCmds)
 			{
@@ -129,7 +126,6 @@ namespace DropShell.Commands
 
 		public void ResetWorkingDir()
 		{
-			//_currentWorkingDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).Replace(Path.DirectorySeparatorChar, '/').Replace(Path.AltDirectorySeparatorChar, '/');
 			string configDefaultDir = ConfigService.Instance.Config.DefaultDir;
 
 			if (_defaultPaths.ContainsKey(configDefaultDir))
