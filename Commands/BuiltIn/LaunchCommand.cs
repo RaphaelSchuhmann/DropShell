@@ -1,5 +1,6 @@
 ﻿using DropShell.Commands.Models;
 using DropShell.Config;
+using DropShell.Services;
 using DropShell.Services.Display;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -82,7 +83,7 @@ namespace DropShell.Commands.BuiltIn
 						}
 					}
 
-					ctx.Window!.Hide();
+					UIHelpers.HideMain();
 					return Task.CompletedTask; // Return after execution
 				}
 			}
@@ -105,7 +106,7 @@ namespace DropShell.Commands.BuiltIn
 						LaunchProgram(path);
 					}
 
-					ctx.Window!.Hide();
+					UIHelpers.HideMain();
 					return Task.CompletedTask;
 				}
 				else
@@ -126,7 +127,7 @@ namespace DropShell.Commands.BuiltIn
 				LaunchProgram(ctx.Args[0]);
 			}
 
-			ctx.Window!.Hide();
+			UIHelpers.HideMain();
 			return Task.CompletedTask;
 		}
 
