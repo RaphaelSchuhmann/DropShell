@@ -42,8 +42,6 @@ namespace DropShell.Commands
 											 t.Namespace == "DropShell.Commands.BuiltIn")
 									  .ToList();
 
-			Debug.WriteLine(builtinCmds.Count);
-
 			foreach (var builtinCmd in builtinCmds)
 			{
 				var cmd = (ICommand)Activator.CreateInstance(builtinCmd)!;

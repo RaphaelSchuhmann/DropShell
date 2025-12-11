@@ -46,7 +46,6 @@ namespace DropShell.Commands.BuiltIn
 
 					foreach (string command in commands)
 					{
-						Debug.WriteLine($"{command}");
 						var match = Regex.Match(command, "\"([^\"]+)\"");
 						if (match.Success)
 						{
@@ -186,9 +185,6 @@ namespace DropShell.Commands.BuiltIn
 
 			path = path.ToLower().Replace(" vs ", " visual studio "); // Normalize path
 
-			double highestScore = 0.0;
-			Process? closestMatch = null;
-
 			string cleanedPath = path.Substring(path.IndexOf(':') + 1).Substring(0, path.LastIndexOf('.') - 2);
 
 			// Split path into keywords
@@ -200,6 +196,21 @@ namespace DropShell.Commands.BuiltIn
 
 			keywords.AddRange(tokensArray);
 
+			// if keywords contains the windows apps directory, it should rather use just the alias
+			if (keywords.Contains("windowsapps"))
+			{
+				string? alias = GetKeyByValue(path);
+				if (alias != null)
+				{
+					keywords.Clear();
+					keywords.Add(alias);
+				}
+			}
+
+			double highestFirstSimilarity = 0;
+			double highestScore = 0.0;
+			Process? closestMatch = null;
+
 			// Jaro-Winkler Similarity check
 			foreach (Process process in processes)
 			{
@@ -209,8 +220,9 @@ namespace DropShell.Commands.BuiltIn
 
 				double similarity = CalculateSimilarity(path, title);
 
-				if (similarity >= 0.75)
+				if (similarity >= highestFirstSimilarity)
 				{
+					int maxRelevance = keywords.Count;
 					double relevance = 0;
 
 					foreach (string keyword in keywords)
@@ -229,8 +241,10 @@ namespace DropShell.Commands.BuiltIn
 						}
 					}
 
-					double finalScore = (similarity * 0.5) + (relevance * 0.5);
-					if (finalScore > 0.65 && finalScore > highestScore)
+					double normalizedRelevance = relevance / maxRelevance;
+					double finalScore = (similarity * 0.7) + (normalizedRelevance * 0.3);
+
+					if (finalScore > 0.6 && finalScore > highestScore)
 					{
 						highestScore = finalScore;
 						closestMatch = process;
@@ -314,6 +328,21 @@ namespace DropShell.Commands.BuiltIn
 			double jaroWinkler = jaro + ((double)prefixLength * 0.1 * (1.0 - jaro));
 
 			return jaroWinkler;
+		}
+
+		private string? GetKeyByValue(string value)
+		{
+			if (string.IsNullOrEmpty(value)) return null;
+
+			var reverseDict = new Dictionary<string, string>();
+
+			foreach (var keyValuePair in ConfigService.Instance.Config.LaunchAliases)
+			{
+				reverseDict.TryAdd(keyValuePair.Value.ToLower(), keyValuePair.Key.ToLower());
+			}
+
+			reverseDict.TryGetValue(value, out var key);
+			return key;
 		}
 	}
 }
