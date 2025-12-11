@@ -16,7 +16,7 @@ namespace DropShell.Commands.BuiltIn
 
         public Task ExecuteAsync(CommandContext ctx)
         {
-            Environment.Exit(0);
+            App.Exit_Click();
 
             return Task.CompletedTask;
         }
