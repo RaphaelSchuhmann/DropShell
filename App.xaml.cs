@@ -55,7 +55,7 @@ namespace DropShell
 		public static void Exit_Click()
 		{
 			App._hotkeyService.Unregister(_mainWindow);
-			Environment.Exit(0);
+			Application.Current.Shutdown();
 		}
 	}
 }
