@@ -185,7 +185,11 @@ namespace DropShell.Commands.BuiltIn
 
 			path = path.ToLower().Replace(" vs ", " visual studio "); // Normalize path
 
-			string cleanedPath = path.Substring(path.IndexOf(':') + 1).Substring(0, path.LastIndexOf('.') - 2);
+			int colonIndex = path.IndexOf(':');
+			int dotIndex = path.LastIndexOf('.');
+			string cleanedPath = colonIndex >= 0 && dotIndex  > colonIndex + 1
+				? path.Substring(colonIndex + 1, dotIndex - colonIndex - 1)
+				: path;
 
 			// Split path into keywords
 			List<string> keywords = new List<string>();
@@ -296,8 +300,9 @@ namespace DropShell.Commands.BuiltIn
 				if (bUsed[j]) orderedMatchedB.Add(b[j]);
 			}
 
+			int minCount = Math.Min(MatchedA.Count, orderedMatchedB.Count);
 			int transpositions = 0;
-			for (int k = 0; k < MatchedA.Count; k++)
+			for (int k = 0; k < minCount; k++)
 			{
 				if (MatchedA[k] != orderedMatchedB[k]) transpositions++;
 			}
