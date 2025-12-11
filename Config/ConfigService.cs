@@ -1,16 +1,7 @@
-﻿using DropShell.Commands;
-using DropShell.Config.Models;
-using System;
+﻿using DropShell.Config.Models;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 using System.Text.Json;
-using Microsoft.Windows;
 using System.Windows;
-using System.Configuration;
 
 namespace DropShell.Config
 {
@@ -48,10 +39,11 @@ namespace DropShell.Config
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string configPath = Path.Combine(appData, "DropShell", "config.json");
 
+            bool isUsingDefaultConfig = false;
+
             if (!File.Exists(configPath))
             {
                 // Display error and switch to default config
-                MessageBox.Show("No custom config found in '%APPDATA%/DropShell/', switching to default config");
                 if (!File.Exists("./dropshell.json") && !File.Exists("./Config/dropshell.json"))
                 {
                     // No default config available
@@ -60,6 +52,9 @@ namespace DropShell.Config
                 }
 
                 configPath = !File.Exists("./dropshell.json") ? "./Config/dropshell.json" : "./dropshell.json";
+
+                MessageBox.Show("No custom config found in '%APPDATA%/DropShell/', switching to default config");
+                isUsingDefaultConfig = true;
             }
 
             try
@@ -111,6 +106,11 @@ namespace DropShell.Config
                 foreach (JsonElement item in startupElement.EnumerateArray())
                 {
                     Config.StartupCommands.Add(item.GetString() ?? "");
+                }
+
+                if (isUsingDefaultConfig)
+                {
+                    MessageBox.Show($"Default hotkey: {Config.HotKey}");
                 }
             }
             catch (Exception ex)
