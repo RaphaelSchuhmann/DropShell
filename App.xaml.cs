@@ -1,8 +1,8 @@
 ﻿using DropShell.Config;
 using DropShell.Services.Hotkey;
-using Hardcodet.Wpf.TaskbarNotification;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Interop;
 
@@ -13,8 +13,7 @@ namespace DropShell
 	/// </summary>
 	public partial class App : Application
 	{
-		private TaskbarIcon _trayIcon = new TaskbarIcon();
-		private HotkeyService _hotkeyService = new HotkeyService();
+		public static HotkeyService _hotkeyService { get; private set; } = new HotkeyService();
 		public static MainWindow _mainWindow { get; private set; }
 
 		protected override void OnStartup(StartupEventArgs e)
@@ -27,18 +26,15 @@ namespace DropShell
 			var helper = new WindowInteropHelper(_mainWindow);
 			_ = helper.Handle;
 
-			_mainWindow.Hide();
+			_mainWindow.Show();
+			if (!ConfigService.Instance.Config.ShowOnStartup) _mainWindow.Hide();
 
 			// Register Hotkey
-			_hotkeyService = new HotkeyService();
 			_hotkeyService.hotkeyTriggered += OpenOnHotkey!;
 			_hotkeyService.Register(ConfigService.Instance.Config.HotKey, _mainWindow);
-
-			// Initialize tray icon
-			//_trayIcon = (TaskbarIcon)FindResource("TrayIcon");
 		}
 
-		private void Open_Click(object sender, RoutedEventArgs e)
+		public static void Open_Click()
 		{
 			App._mainWindow.Dispatcher.Invoke(() =>
 			{
@@ -56,11 +52,10 @@ namespace DropShell
 			});
 		}
 
-		private void Exit_Click(object sender, RoutedEventArgs e)
+		public static void Exit_Click()
 		{
-			_trayIcon.Dispose();
-			_hotkeyService.Unregister(_mainWindow);
-			Shutdown();
+			App._hotkeyService.Unregister(_mainWindow);
+			Application.Current.Shutdown();
 		}
 	}
 }
