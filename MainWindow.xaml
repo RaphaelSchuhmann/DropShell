@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DropShell" xmlns:tb="http://www.hardcodet.net/taskbar"
+		xmlns:tb="clr-namespace:H.NotifyIcon;assembly=H.NotifyIcon.Wpf"
+        xmlns:local="clr-namespace:DropShell"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Title="DropShell"
@@ -14,7 +15,11 @@
         Topmost="True"
         Top="0"
         Left="0">
-    <Window.Resources>
+	<Window.Resources>
+		<ContextMenu x:Key="TrayMenu">
+			<MenuItem Header="Open" Click="TrayOpen_Click"/>
+			<MenuItem Header="Exit" Click="TrayExit_Click"/>
+		</ContextMenu>
         <Style TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#FFFFFF"/>
@@ -50,7 +55,14 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <!--Close Button-->
+		<tb:TaskbarIcon
+			x:Name="TrayIcon"
+			ToolTipText="DropShell"
+			IconSource="pack://application:,,,/favicon.ico"
+			ContextMenu="{StaticResource TrayMenu}"
+			/>
+
+		<!--Close Button-->
         <Button Grid.Column="1" 
                 Click="CloseWindow_Click" 
                 HorizontalAlignment="Right" VerticalAlignment="Top"
