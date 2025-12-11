@@ -283,7 +283,7 @@ namespace DropShell.Commands.BuiltIn
 				{
 					if (a[i] == b[j] && bUsed[j] == false)
 					{
-						MatchedA.Append(a[i]); ;
+						MatchedA.Add(a[i]); ;
 						bUsed[j] = true;
 
 						matches++;
