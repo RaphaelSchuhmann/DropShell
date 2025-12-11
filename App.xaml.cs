@@ -30,7 +30,6 @@ namespace DropShell
 			if (!ConfigService.Instance.Config.ShowOnStartup) _mainWindow.Hide();
 
 			// Register Hotkey
-			_hotkeyService = new HotkeyService();
 			_hotkeyService.hotkeyTriggered += OpenOnHotkey!;
 			_hotkeyService.Register(ConfigService.Instance.Config.HotKey, _mainWindow);
 		}
