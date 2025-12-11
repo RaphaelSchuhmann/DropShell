@@ -1,14 +1,8 @@
 ﻿using DropShell.Commands;
 using DropShell.Config;
-using DropShell.Services.Hotkey;
 using DropShell.Services.Display;
-using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
 using DropShell.Services;
 
 namespace DropShell
