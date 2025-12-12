@@ -248,7 +248,7 @@ namespace DropShell.Commands.BuiltIn
 					double normalizedRelevance = relevance / maxRelevance;
 					double finalScore = (similarity * 0.7) + (normalizedRelevance * 0.3);
 
-					if (finalScore > 0.6 && finalScore > highestScore)
+					if (finalScore > 0.5 && finalScore > highestScore)
 					{
 						highestScore = finalScore;
 						closestMatch = process;
