@@ -18,6 +18,7 @@ namespace DropShell.Commands.BuiltIn
 
         public Task ExecuteAsync(CommandContext ctx)
         {
+            ConfigService.Instance.ClearConfig();
             ConfigService.Instance.LoadConfig();
 
             // Reopen shell

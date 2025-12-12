@@ -52,6 +52,7 @@ namespace DropShell.Services.Display
             ["command.cd.badPath"] = "Invalid path format: ",
             ["command.launch.badPath"] = "Invalid path: Executable was not found: ",
             ["command.launch.notExe"] = "Invalid path: Path is not an executable: ",
+            ["command.launch.errorStarting"] = "Error launching: There was an internal error. Please try again",
             ["command.noArgs"] = "Invalid Input: No arguments were supplied",
             ["command.unknown"] = "Unknown command: ",
         };

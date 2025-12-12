@@ -1,18 +1,16 @@
 ﻿using DropShell.Commands;
 using DropShell.Config;
-using DropShell.Services.Hotkey;
 using DropShell.Services.Display;
-using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Runtime.CompilerServices;
+using DropShell.Services;
 
 namespace DropShell
 {
     public partial class MainWindow : Window
     {
+        private H.NotifyIcon.TaskbarIcon? _trayIcon;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -22,7 +20,14 @@ namespace DropShell
         {
 			OutputService.Initialize(OutputScroller, CommandOutput);
 
-			var mainWindow = Window.GetWindow(this);
+            _trayIcon = TrayIcon as H.NotifyIcon.TaskbarIcon;
+            if (_trayIcon is null)
+            {
+                MessageBox.Show("Tray icon resource not found.");
+                Environment.Exit(1);
+            }
+
+            var mainWindow = Window.GetWindow(this);
             var screen = System.Windows.SystemParameters.PrimaryScreenWidth;
             if (mainWindow != null)
             {
@@ -61,17 +66,48 @@ namespace DropShell
             this.Hide();
         }
 
-        private async void CommandInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void TrayOpen_Click(object sender, RoutedEventArgs e)
+        {
+            App.Open_Click();
+        }
+
+        private void TrayExit_Click(object sender, RoutedEventArgs e)
+        {
+            _trayIcon?.Dispose();
+            App.Exit_Click();
+        }
+
+		private async void CommandInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
                 if (!string.IsNullOrEmpty(CommandInput.Text)) 
                 { 
                     if (CommandInput.Text != "clear") OutputService.Instance.Log(CommandInput.Text);
+                    
                     await CommandDispatcher.Instance.Dispatch(CommandInput.Text, this);
                     CurrentPathDisplay.Text = $"{CommandDispatcher.Instance.CurrentWorkingDir()}>";
+
+                    CommandHistoryService.Instance.Add(CommandInput.Text);
+
                     CommandInput.Text = string.Empty; 
                 }
+            }
+            else if (e.Key == System.Windows.Input.Key.Down)
+            {
+                if (CommandHistoryService.Instance.TryGetNext(out var cmd))
+                {
+                    CommandInput.Text = cmd;
+                    CommandInput.CaretIndex = CommandInput.Text!.Length;
+                }
+            }
+            else if (e.Key == System.Windows.Input.Key.Up)
+            {
+				if (CommandHistoryService.Instance.TryGetPrevious(out var cmd))
+                {
+                    CommandInput.Text = cmd;
+					CommandInput.CaretIndex = CommandInput.Text!.Length;
+				}
             }
         }
     }
